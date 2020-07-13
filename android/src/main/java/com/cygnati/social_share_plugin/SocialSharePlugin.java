@@ -95,6 +95,8 @@ public class SocialSharePlugin
         plugin.channel = channel;
         plugin.activity = registrar.activity();
         channel.setMethodCallHandler(plugin);
+        
+        registrar.addActivityResultListener(plugin);
     }
 
     @Override
@@ -200,7 +202,7 @@ public class SocialSharePlugin
         share.setType(type);
         share.putExtra(Intent.EXTRA_STREAM, uri);
         share.setPackage(INSTAGRAM_PACKAGE_NAME);
-        share.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        share.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
 
         final Intent chooser = Intent.createChooser(share, "Share to");
         final List<ResolveInfo> resInfoList = activity.getPackageManager().queryIntentActivities(chooser,
@@ -208,7 +210,7 @@ public class SocialSharePlugin
 
         for (ResolveInfo resolveInfo : resInfoList) {
             final String packageName = resolveInfo.activityInfo.packageName;
-            activity.grantUriPermission(packageName, uri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            activity.grantUriPermission(packageName, uri, Intent.FLAG_GRANT_READ_URI_PERMISSION);            
         }
 
         activity.startActivityForResult(chooser, INSTAGRAM_REQUEST_CODE);
